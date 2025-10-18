@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken, extractToken } from "@/lib/auth"
 import { analyzeReport } from "@/lib/gemini"
-import { db } from "@/lib/db"
+import { updateReport } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,15 +25,15 @@ export async function POST(request: NextRequest) {
 
     const analysis = await analyzeReport(fileContent, reportType)
 
-    // Update report with analysis
-    const report = db.reports.find((r) => r._id === reportId)
-    if (report) {
-      report.analysis = analysis
-      report.analyzedAt = new Date()
-    }
+    // Update report with analysis in MongoDB
+    const updatedReport = await updateReport(reportId, {
+      analysis,
+      analyzedAt: new Date(),
+    })
 
     return NextResponse.json(analysis)
   } catch (error) {
+    console.error("Analysis error:", error)
     return NextResponse.json({ message: "Analysis failed" }, { status: 500 })
   }
 }

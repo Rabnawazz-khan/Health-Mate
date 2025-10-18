@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken, extractToken } from "@/lib/auth"
 import { addVital } from "@/lib/db"
+import { ObjectId } from "mongodb"
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,16 +23,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 })
     }
 
-    const vital = addVital({
-      userId: decoded.userId,
+    const vital = await addVital({
+      userId: new ObjectId(decoded.userId),
       type,
       value,
       notes,
-      date: new Date(),
     })
 
     return NextResponse.json(vital)
   } catch (error) {
+    console.error("Add vital error:", error)
     return NextResponse.json({ message: "Failed to add vital" }, { status: 500 })
   }
 }

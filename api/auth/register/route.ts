@@ -10,21 +10,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 })
     }
 
-    if (findUserByEmail(email)) {
+    const existingUser = await findUserByEmail(email)
+    if (existingUser) {
       return NextResponse.json({ message: "User already exists" }, { status: 400 })
     }
 
-    const user = createUser({
+    const user = await createUser({
       email,
-      password, // In production, hash this!
+      password,
       name,
-      createdAt: new Date(),
     })
 
-    const token = generateToken(user._id)
+    const token = generateToken(user._id.toString())
 
-    return NextResponse.json({ token, user: { id: user._id, email, name } })
+    return NextResponse.json({
+      token,
+      user: { id: user._id, email, name },
+    })
   } catch (error) {
+    console.error("Registration error:", error)
     return NextResponse.json({ message: "Registration failed" }, { status: 500 })
   }
 }

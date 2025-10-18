@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 })
     }
 
-    const user = findUserById(decoded.userId)
+    const user = await findUserById(decoded.userId)
 
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 })
@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
       name: user.name,
     })
   } catch (error) {
+    console.error("Fetch user error:", error)
     return NextResponse.json({ message: "Failed to fetch user" }, { status: 500 })
   }
 }

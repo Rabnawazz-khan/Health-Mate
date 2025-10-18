@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken, extractToken } from "@/lib/auth"
 import { addReport } from "@/lib/db"
+import { ObjectId } from "mongodb"
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,17 +26,17 @@ export async function POST(request: NextRequest) {
     }
 
     // In production, upload to Cloudinary/Firebase
-    const report = addReport({
-      userId: decoded.userId,
+    const report = await addReport({
+      userId: new ObjectId(decoded.userId),
       fileName: file.name,
       reportType,
-      uploadDate: new Date(),
       fileSize: file.size,
       summary: "AI analysis pending...",
     })
 
     return NextResponse.json(report)
   } catch (error) {
+    console.error("Upload error:", error)
     return NextResponse.json({ message: "Upload failed" }, { status: 500 })
   }
 }

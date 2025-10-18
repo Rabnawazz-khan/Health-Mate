@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken, extractToken } from "@/lib/auth"
-import { getReportsByUserId, getVitalsByUserId } from "@/lib/db"
+import { getTimelineByUserId } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,23 +16,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 })
     }
 
-    const reports = getReportsByUserId(decoded.userId).map((r) => ({
-      ...r,
-      type: "report",
-      title: r.fileName,
-      description: `Report Type: ${r.reportType}`,
-    }))
+    const timeline = await getTimelineByUserId(decoded.userId)
 
-    const vitals = getVitalsByUserId(decoded.userId).map((v) => ({
-      ...v,
-      type: "vital",
-      title: `${v.type.toUpperCase()}: ${v.value}`,
-    }))
+    const formattedTimeline = timeline.map((item) => {
+      if (item.type === "report") {
+        return {
+          ...item,
+          title: item.fileName,
+          description: `Report Type: ${item.reportType}`,
+          date: item.createdAt,
+        }
+      } else {
+        return {
+          ...item,
+          title: `${item.type.toUpperCase()}: ${item.value}`,
+          description: item.notes || "",
+          date: item.createdAt,
+        }
+      }
+    })
 
-    const timeline = [...reports, ...vitals].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-    return NextResponse.json(timeline)
+    return NextResponse.json(formattedTimeline)
   } catch (error) {
+    console.error("Fetch timeline error:", error)
     return NextResponse.json({ message: "Failed to fetch timeline" }, { status: 500 })
   }
 }

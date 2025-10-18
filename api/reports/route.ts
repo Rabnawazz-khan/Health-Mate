@@ -16,10 +16,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 })
     }
 
-    const reports = getReportsByUserId(decoded.userId)
+    const reports = await getReportsByUserId(decoded.userId)
 
     return NextResponse.json(reports)
   } catch (error) {
+    console.error("Fetch reports error:", error)
     return NextResponse.json({ message: "Failed to fetch reports" }, { status: 500 })
   }
 }
