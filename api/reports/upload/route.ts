@@ -1,0 +1,41 @@
+import { type NextRequest, NextResponse } from "next/server"
+import { verifyToken, extractToken } from "@/lib/auth"
+import { addReport } from "@/lib/db"
+
+export async function POST(request: NextRequest) {
+  try {
+    const token = extractToken(request.headers.get("authorization"))
+
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    }
+
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 })
+    }
+
+    const formData = await request.formData()
+    const file = formData.get("file") as File
+    const reportType = formData.get("reportType") as string
+
+    if (!file) {
+      return NextResponse.json({ message: "No file provided" }, { status: 400 })
+    }
+
+    // In production, upload to Cloudinary/Firebase
+    const report = addReport({
+      userId: decoded.userId,
+      fileName: file.name,
+      reportType,
+      uploadDate: new Date(),
+      fileSize: file.size,
+      summary: "AI analysis pending...",
+    })
+
+    return NextResponse.json(report)
+  } catch (error) {
+    return NextResponse.json({ message: "Upload failed" }, { status: 500 })
+  }
+}
