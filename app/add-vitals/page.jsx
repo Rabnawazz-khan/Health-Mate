@@ -1,8 +1,6 @@
 "use client"
 
-import React from "react"
-
-import { useState } from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
@@ -24,6 +22,7 @@ export default function AddVitalsPage() {
 
     setLoading(true)
     setError("")
+    setSuccess("")
 
     try {
       const token = document.cookie
@@ -73,29 +72,36 @@ export default function AddVitalsPage() {
         return "e.g., 70 kg"
       case "heart-rate":
         return "e.g., 72 bpm"
+      case "temperature":
+        return "e.g., 98.6°F"
+      case "oxygen":
+        return "e.g., 98%"
       default:
         return "Enter value"
     }
   }
 
   return (
-    <div className="min-h-screen bg-muted p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-2xl mx-auto">
-        <Link href="/dashboard" className="text-primary hover:underline mb-6 inline-block">
+        <Link href="/dashboard" className="text-purple-500 hover:underline mb-6 inline-block">
           ← Back to Dashboard
         </Link>
 
-        <div className="bg-background rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold mb-2">Add Vitals</h1>
-          <p className="text-muted-foreground mb-8">Manually track your health vitals (BP, Sugar, Weight, etc.)</p>
+        <div className="bg-white rounded-2xl shadow-xl p-8 transform transition hover:scale-105">
+          <h1 className="text-3xl font-bold mb-2 text-gray-800">Add Vitals</h1>
+          <p className="text-gray-500 mb-8">
+            Manually track your health vitals (BP, Sugar, Weight, Heart Rate, Temperature, Oxygen)
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Vital Type */}
             <div>
               <label className="block text-sm font-medium mb-2">Vital Type</label>
               <select
                 value={vitalType}
                 onChange={(e) => setVitalType(e.target.value)}
-                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 <option value="bp">Blood Pressure (BP)</option>
                 <option value="sugar">Blood Sugar</option>
@@ -106,6 +112,7 @@ export default function AddVitalsPage() {
               </select>
             </div>
 
+            {/* Value */}
             <div>
               <label className="block text-sm font-medium mb-2">Value</label>
               <input
@@ -113,29 +120,31 @@ export default function AddVitalsPage() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder={getPlaceholder()}
-                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
+            {/* Notes */}
             <div>
               <label className="block text-sm font-medium mb-2">Notes (Optional)</label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Any additional notes..."
-                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
                 rows={4}
               />
             </div>
 
-            {error && <div className="bg-destructive/10 text-destructive px-4 py-2 rounded-lg">{error}</div>}
+            {/* Error & Success */}
+            {error && <div className="bg-red-50 text-red-600 px-4 py-2 rounded-xl">{error}</div>}
+            {success && <div className="bg-green-50 text-green-700 px-4 py-2 rounded-xl">{success}</div>}
 
-            {success && <div className="bg-accent/10 text-accent px-4 py-2 rounded-lg">{success}</div>}
-
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-accent hover:bg-green-600 text-black font-medium py-2 rounded-lg transition disabled:opacity-50"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-3 rounded-xl transition disabled:opacity-50"
             >
               {loading ? "Recording..." : "Record Vital"}
             </button>

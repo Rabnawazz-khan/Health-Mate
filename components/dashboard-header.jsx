@@ -11,17 +11,23 @@ export default function DashboardHeader({ user }) {
   }
 
   return (
-    <header className="bg-primary text-black shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="bg-white shadow-xl sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Logo / Brand */}
         <div>
-          <h1 className="text-2xl font-bold">HealthMate</h1>
-          <p className="text-sm opacity-90">Sehat ka Smart Dost</p>
+          <h1 className="text-2xl font-bold text-purple-600">HealthMate</h1>
         </div>
+
+        {/* User Info & Logout */}
         <div className="flex items-center gap-4">
-          {user && <span className="text-sm">Welcome, {user.name}</span>}
+          {user && (
+            <span className="text-sm text-gray-700 font-medium">
+              Welcome, <span className="text-purple-600">{user.name}</span>
+            </span>
+          )}
           <button
             onClick={handleLogout}
-            className="bg-white text-primary px-4 py-2 rounded-lg hover:bg-opacity-90 transition font-medium"
+            className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-xl font-medium transition"
           >
             Logout
           </button>

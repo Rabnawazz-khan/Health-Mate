@@ -48,57 +48,59 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-400 to-red-400">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your health data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-white mx-auto mb-4"></div>
+          <p className="text-white font-medium">Loading your health data...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-muted">
+    <div className="min-h-screen bg-gray-50">
       <DashboardHeader user={user} />
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <main className="max-w-7xl mx-auto px-4 py-10">
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
           <Link
             href="/upload-report"
-            className="bg-primary hover:bg-primary-dark text-black p-6 rounded-lg shadow-md transition transform hover:scale-105"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white p-6 rounded-2xl shadow-xl transition transform hover:scale-105"
           >
-            <div className="text-3xl mb-2">📄</div>
+            <div className="text-4xl mb-3 animate-bounce">📄</div>
             <h3 className="font-bold text-lg">Upload Report</h3>
-            <p className="text-sm opacity-90">Add medical reports</p>
+            <p className="text-sm opacity-90 mt-1">Add medical reports</p>
           </Link>
 
           <Link
             href="/add-vitals"
-            className="bg-accent hover:bg-green-600 text-black p-6 rounded-lg shadow-md transition transform hover:scale-105"
+            className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white p-6 rounded-2xl shadow-xl transition transform hover:scale-105"
           >
-            <div className="text-3xl mb-2">💓</div>
+            <div className="text-4xl mb-3 animate-bounce">💓</div>
             <h3 className="font-bold text-lg">Add Vitals</h3>
-            <p className="text-sm opacity-90">Track BP, Sugar, Weight</p>
+            <p className="text-sm opacity-90 mt-1">Track BP, Sugar, Weight</p>
           </Link>
 
           <Link
             href="/timeline"
-            className="bg-secondary hover:bg-cyan-600 text-black p-6 rounded-lg shadow-md transition transform hover:scale-105"
+            className="bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white p-6 rounded-2xl shadow-xl transition transform hover:scale-105"
           >
-            <div className="text-3xl mb-2">📊</div>
+            <div className="text-4xl mb-3 animate-bounce">📊</div>
             <h3 className="font-bold text-lg">Timeline</h3>
-            <p className="text-sm opacity-90">View health history</p>
+            <p className="text-sm opacity-90 mt-1">View health history</p>
           </Link>
         </div>
 
+        {/* Recent Data */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Recent Reports</h2>
+          <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <h2 className="text-2xl font-bold mb-4 text-gray-700">Recent Reports</h2>
             <ReportList reports={reports} />
           </div>
 
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Recent Vitals</h2>
+          <div className="bg-white p-6 rounded-2xl shadow-lg">
+            <h2 className="text-2xl font-bold mb-4 text-gray-700">Recent Vitals</h2>
             <VitalsList vitals={vitals} />
           </div>
         </div>
